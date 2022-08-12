@@ -1,12 +1,12 @@
-import { Block } from "./Block";
+import { Block } from "./Block.js";
 
-class Blockchain {
+export class Blockchain {
 	constructor() {
 		this.chain = new Array();
 		this.nodes = new Set();
 	}
 	new_block(proof, info, previous_hash = null) {
-		block = new Block(proof, info, previous_hash);
+		let block = new Block(proof, info, previous_hash);
 		Block.count = Block.count + 1;
 		this.chain.push(block);
 		return block;
