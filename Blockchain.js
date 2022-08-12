@@ -1,7 +1,15 @@
+import { Block } from "./Block";
+
 class Blockchain {
 	constructor() {
 		this.chain = new Array();
 		this.nodes = new Set();
+	}
+	new_block(proof, info, previous_hash = null) {
+		block = new Block(proof, info, previous_hash);
+		Block.count = Block.count + 1;
+		this.chain.push(block);
+		return block;
 	}
 }
 
@@ -58,21 +66,6 @@ class Blockchain {
             self.chain = new_chain
             return True
         return False
-
-    def in_class(self, chain):
-        class_in_chain = []
-        for block in chain:
-            new_block = Block(block["proof"], block, block["previous_hash"])
-            new_block.index = block["index"]
-            new_block.timestamp = block["timestamp"]
-            class_in_chain.append(new_block)
-        return class_in_chain
-
-    def new_block(self, proof, info, previous_hash=None):
-        block = Block(proof, info, previous_hash)
-        Block.count = Block.count + 1
-        self.chain.append(block)
-        return block
 
     def proof_of_work(self, last_proof):
         """
