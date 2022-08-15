@@ -17,9 +17,6 @@
   },
   "homepage": "https://github.com/Aniome/Blockchain#readme",
   "dependencies": {
-
-  },
-  "devDependencies": {
-    
+    "express": "^4.18.1"
   }
 }
