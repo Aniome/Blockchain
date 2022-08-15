@@ -1,4 +1,5 @@
 import { Block } from "./Block.js";
+var crypto = require("crypto");
 
 export class Blockchain {
 	constructor() {
@@ -92,12 +93,6 @@ export class Blockchain {
         block_dict = block.in_dict()
         block_string = json.dumps(block_dict, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
-
-    def chain_in_dict(self):
-        chain_in_dict = []
-        for block in self.chain:
-            chain_in_dict.append(block.in_dict())
-        return chain_in_dict
 
     @property
     def last_block(self):
