@@ -1,5 +1,5 @@
 import { Block } from "./Block.js";
-var crypto = require("crypto");
+import crypto from "node:crypto";
 
 export class Blockchain {
 	constructor() {
@@ -11,6 +11,13 @@ export class Blockchain {
 		Block.count = Block.count + 1;
 		this.chain.push(block);
 		return block;
+	}
+	static hash(block) {
+		let block_string = JSON.stringify(block);
+		return crypto
+			.createHmac("sha256", block_string)
+			.update(String(block.index))
+			.digest("hex");
 	}
 }
 
@@ -87,12 +94,6 @@ export class Blockchain {
         guess = f'{last_proof}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
-
-    @staticmethod
-    def hash(block):
-        block_dict = block.in_dict()
-        block_string = json.dumps(block_dict, sort_keys=True).encode()
-        return hashlib.sha256(block_string).hexdigest()
 
     @property
     def last_block(self):
