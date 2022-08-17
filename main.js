@@ -10,4 +10,6 @@ var data = {
 let block = blockchain.new_block(0, data);
 let block_string = JSON.stringify(block);
 //blockchain.proof_of_work(0);
-console.log(blockchain.last_block);
+//blockchain.register_node("http://192.168.0.5:5000");
+
+console.log(blockchain.nodes);

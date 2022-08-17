@@ -1,5 +1,6 @@
 import { Block } from "./Block.js";
 import crypto from "node:crypto";
+import Url from "node:url";
 
 export class Blockchain {
 	constructor() {
@@ -30,17 +31,13 @@ export class Blockchain {
 	get last_block() {
 		return this.chain.at(-1);
 	}
+	register_node(address) {
+		let parsed_url = Url.parse(address);
+		this.nodes.add(parsed_url);
+	}
 }
 
 /*
-    def register_node(self, address):
-        """
-        Вносим новый узел в список узлов
-        адрес узла , другими словами: 'http://192.168.0.5:5000'
-        """
-        parsed_url = urlparse(address)
-        self.nodes.add(parsed_url.netloc)
-
     def valid_chain(self, chain):
         """
         Проверяем, является ли внесенный в блок хеш корректным
