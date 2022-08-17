@@ -8,4 +8,6 @@ var data = {
 	product_description: "Processor",
 };
 let block = blockchain.new_block(0, data);
-console.log(Blockchain.hash(block));
+let block_string = JSON.stringify(block);
+//blockchain.proof_of_work(0);
+console.log(blockchain.last_block);
