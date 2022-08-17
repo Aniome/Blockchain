@@ -3,21 +3,32 @@ import crypto from "node:crypto";
 
 export class Blockchain {
 	constructor() {
-		this.chain = new Array();
+		this.chain = [];
 		this.nodes = new Set();
 	}
-	new_block(proof, info, previous_hash = null) {
+	new_block(proof, info, previous_hash) {
 		let block = new Block(proof, info, previous_hash);
 		Block.count = Block.count + 1;
 		this.chain.push(block);
 		return block;
 	}
-	static hash(block) {
-		let block_string = JSON.stringify(block);
-		return crypto
-			.createHmac("sha256", block_string)
-			.update(String(block.index))
-			.digest("hex");
+	proof_of_work(last_proof) {
+		let proof = 0;
+		while (!this.valid_proof(last_proof, proof)) {
+			proof++;
+		}
+		return proof;
+	}
+	valid_proof(last_proof, proof) {
+		let guess = `${last_proof}${proof}`;
+		let guess_hash = Blockchain.hash(guess);
+		return guess_hash.substring(-1, 4) == "0000";
+	}
+	static hash(str) {
+		return crypto.createHash("sha256").update(str).digest("hex");
+	}
+	get last_block() {
+		return this.chain.at(-1);
 	}
 }
 
@@ -74,30 +85,6 @@ export class Blockchain {
             self.chain = new_chain
             return True
         return False
-
-    def proof_of_work(self, last_proof):
-        """
-        Простая проверка алгоритма:
-            - Поиска числа p`, так как hash(pp`) содержит 4 заглавных нуля, где p - предыдущий
-            - p является предыдущим доказательством, а p` - новым
-        """
-        proof = 0
-        while self.valid_proof(last_proof, proof) is False:
-            proof += 1
-        return proof
-
-    @staticmethod
-    def valid_proof(last_proof, proof):
-        """
-        Подтверждение доказательства: Содержит ли hash(last_proof, proof) 4 заглавных нуля?
-        """
-        guess = f'{last_proof}{proof}'.encode()
-        guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000"
-
-    @property
-    def last_block(self):
-        return self.chain[-1]
 
     def generateQRcode(self, block):
         file = f'QR/{block.index}.png'
