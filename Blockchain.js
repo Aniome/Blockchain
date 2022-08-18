@@ -7,7 +7,7 @@ export class Blockchain {
 		this.chain = [];
 		this.nodes = new Set();
 	}
-	new_block(proof, info, previous_hash) {
+	new_block(proof, info, previous_hash = null) {
 		let block = new Block(proof, info, previous_hash);
 		Block.count = Block.count + 1;
 		this.chain.push(block);
@@ -15,12 +15,12 @@ export class Blockchain {
 	}
 	proof_of_work(last_proof) {
 		let proof = 0;
-		while (!this.valid_proof(last_proof, proof)) {
+		while (!this.#valid_proof(last_proof, proof)) {
 			proof++;
 		}
 		return proof;
 	}
-	valid_proof(last_proof, proof) {
+	#valid_proof(last_proof, proof) {
 		let guess = `${last_proof}${proof}`;
 		let guess_hash = Blockchain.hash(guess);
 		return guess_hash.substring(-1, 4) == "0000";
@@ -28,34 +28,37 @@ export class Blockchain {
 	static hash(str) {
 		return crypto.createHash("sha256").update(str).digest("hex");
 	}
-	get last_block() {
-		return this.chain.at(-1);
-	}
 	register_node(address) {
 		let parsed_url = Url.parse(address);
 		this.nodes.add(parsed_url);
 	}
+	valid_chain(chain) {
+		let prev_block = chain[0];
+		for (let i = 1; i < chain.length; i++) {
+			let block = chain[i];
+			if (block.previous_hash != Blockchain.hash(JSON.stringify(prev_block))) {
+				return false;
+			}
+			if (!this.#valid_proof(prev_block.proof, block.proof)) {
+				return false;
+			}
+			prev_block = block;
+		}
+		return true;
+	}
+	resolve_conflicts() {
+		let neighbours = this.nodes;
+		let new_chain = null;
+		let max_length = this.chain.length;
+		for (node of neighbours) {
+		}
+	}
+	get last_block() {
+		return this.chain.at(-1);
+	}
 }
 
 /*
-    def valid_chain(self, chain):
-        """
-        Проверяем, является ли внесенный в блок хеш корректным
-        """
-        last_block = chain[0]
-        current_index = 1
-        while current_index < len(chain):
-            block = chain[current_index]
-            # Проверяем правильность хеша блока
-            if block.previous_hash != self.hash(last_block):
-                return False
-            # Проверяем, является ли подтверждение работы корректным
-            if not self.valid_proof(last_block.proof, block.proof):
-                return False
-            last_block = block
-            current_index += 1
-        return True
-
     def resolve_conflicts(self):
         """
         Это алгоритм Консенсуса, он разрешает конфликты, 
