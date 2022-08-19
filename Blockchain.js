@@ -1,6 +1,7 @@
 import { Block } from "./Block.js";
 import crypto from "node:crypto";
 import Url from "node:url";
+import QRCode from "qrcode";
 
 export class Blockchain {
 	constructor() {
@@ -52,6 +53,9 @@ export class Blockchain {
 		let max_length = this.chain.length;
 		for (node of neighbours) {
 		}
+	}
+	generateQRcode(block) {
+		QRCode.toFile(`${block.index}.png`, JSON.stringify(block));
 	}
 	get last_block() {
 		return this.chain.at(-1);
