@@ -31,7 +31,7 @@ app.get("/chain", (req, res) => {
 	res.status(200).json(response);
 });
 
-app.get("/nodes/register", (req, res) => {
+app.post("/nodes/register", (req, res) => {
 	const nodes = req.body.nodes;
 	for (let node of nodes) {
 		blockchain.register_node(node);
@@ -44,8 +44,8 @@ app.get("/nodes/register", (req, res) => {
 });
 
 app.get("/nodes/resolve", (req, res) => {
-	let response;
 	blockchain.resolve_conflicts().then((ans) => {
+		let response;
 		if (ans) {
 			response = {
 				message: "Наша цепь была замена",
@@ -61,18 +61,16 @@ app.get("/nodes/resolve", (req, res) => {
 	});
 });
 
-app.listen(PORT);
+app.post("/checkqr", (req, res) => {
+	let data = req.body;
+	for (let item of blockchain.chain) {
+		for (let property in data) {
+			if (item[property] != data[property]) {
+				return res.status(200).send(false);
+			}
+		}
+	}
+	return res.status(200).send(true);
+});
 
-/*
-@app.route('/checkqr', methods=['POST'])
-def checkQR():
-    data = request.get_json()
-    print(data)
-    chain = blockchain.chain_in_dict()
-    response = {}
-    if data in chain:
-        response["chain"] = True
-        return jsonify(response), 200
-    response["chain"] = False
-    return jsonify(response), 200
- */
+app.listen(PORT);

@@ -5,7 +5,7 @@ export class Block {
 		this.proof = proof;
 		this.previous_hash = previous_hash;
 		// Производитель
-		this.manufacter = info.manufacter;
+		this.manufacturer = info.manufacturer;
 		// Наименование товара
 		this.name_of_product = info.name_of_product;
 		// Дата производства
