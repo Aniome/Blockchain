@@ -8,6 +8,7 @@ const blockchain = new Blockchain();
 
 app.post("/mine", (req, res) => {
 	const values = req.body;
+	values.index = blockchain.chain.length + 1;
 	const last_block = blockchain.last_block;
 	let last_proof, previous_hash;
 	if (last_block == undefined) {
@@ -18,7 +19,7 @@ app.post("/mine", (req, res) => {
 		previous_hash = Blockchain.hash(JSON.stringify(last_block));
 	}
 	const proof = blockchain.proof_of_work(last_proof);
-	const block = blockchain.new_block(proof, values, previous_hash);
+	const block = blockchain.new_block(proof, previous_hash, values);
 	blockchain.generateQRcode(block);
 	res.status(200).json(block);
 });
