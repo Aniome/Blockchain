@@ -1,3 +1,7 @@
+/**
+ * @module Blockchain
+ */
+
 import { Block } from "./Block.js";
 import crypto from "node:crypto";
 import Url from "node:url";

@@ -1,3 +1,7 @@
+/**
+ * @module Block
+ */
+
 export class Block {
 	/**
 	 * Создает экземпляр Block.
