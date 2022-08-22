@@ -89,7 +89,7 @@ export class Blockchain {
 	}
 	/**
 	 * Проверка актуальности цепи, её замена в случае неактульности
-	 * @returns {boolean} true если цепь заменена
+	 * @returns {boolean} true если цепь заменена, false в остальных случаях
 	 */
 	async resolve_conflicts() {
 		let neighbours = this.nodes;
@@ -120,7 +120,9 @@ export class Blockchain {
 	generateQRcode(block) {
 		QRCode.toFile(`${block.index}.png`, JSON.stringify(block));
 	}
-	/** Возвращает последний блок из цепи  */
+	/**
+	 * @return {Block} Возвращает последний блок из цепи
+	 */
 	get last_block() {
 		return this.chain.at(-1);
 	}
