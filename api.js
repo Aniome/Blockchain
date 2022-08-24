@@ -1,10 +1,16 @@
 import express from "express";
 import { Blockchain } from "./Blockchain.js";
+import { connectDB } from "./db.js";
 
-const PORT = 5000;
-const app = express();
-app.use(express.json());
 const blockchain = new Blockchain();
+
+async function startApp() {
+	const PORT = 5000;
+	const app = express();
+	app.use(express.json());
+	app.listen(PORT);
+	connectDB.then();
+}
 
 app.post("/mine", (req, res) => {
 	const values = req.body;
@@ -74,4 +80,4 @@ app.post("/checkqr", (req, res) => {
 	return res.status(200).send(true);
 });
 
-app.listen(PORT);
+startApp();

@@ -119,7 +119,7 @@ export class Blockchain {
 	}
 	/**
 	 * Создает файл с QR-кодом
-	 * @param {Block} block
+	 * @param {Block} block - блок для которого необходимо создать QR-код
 	 */
 	generateQRcode(block) {
 		QRCode.toFile(`${block.index}.png`, JSON.stringify(block));
