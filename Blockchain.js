@@ -7,7 +7,8 @@ import crypto from "node:crypto";
 import Url from "node:url";
 import QRCode from "qrcode";
 import fetch from "node-fetch";
-import Node from "./node.js";
+import Node from "./Node_.js";
+import { blockchain } from "./api.js";
 
 export class Blockchain {
 	count = 0;
@@ -81,14 +82,17 @@ export class Blockchain {
 	 */
 	async register_node(address) {
 		let parsed_url = Url.parse(address);
-		await Node.create({
-			protocol: parsed_url.protocol,
-			slashes: parsed_url.slashes,
-			host: parsed_url.host,
-			port: parsed_url.port,
-			hostname: parsed_url.hostname,
-			href: parsed_url.href,
-		});
+		let node = await Node.findOne({ href: parsed_url.href });
+		if (!node) {
+			await Node.create({
+				protocol: parsed_url.protocol,
+				slashes: parsed_url.slashes,
+				host: parsed_url.host,
+				port: parsed_url.port,
+				hostname: parsed_url.hostname,
+				href: parsed_url.href,
+			});
+		}
 	}
 	/**
 	 * Проверка цепи на валидность
@@ -114,19 +118,23 @@ export class Blockchain {
 	 * @returns {boolean} true если цепь заменена, false в остальных случаях
 	 */
 	async resolve_conflicts() {
-		let neighbours = this.nodes;
+		let neighbours = await Node.find({});
 		let new_chain = null;
-		let max_length = this.chain.length;
+		let max_length = blockchain.count;
 		for (let node of neighbours) {
-			const response = await fetch(`${node.href}chain`);
-			if (response.status == 200) {
-				const data = await response.json();
-				let length = data.length;
-				let chain = data.chain;
-				if (length > max_length && this.#valid_chain(chain)) {
-					max_length = length;
-					new_chain = chain;
+			try {
+				const response = await fetch(`${node.href}chain`);
+				if (response.status == 200) {
+					const data = await response.json();
+					let length = data.length;
+					let chain = data.chain;
+					if (length > max_length && this.#valid_chain(chain)) {
+						max_length = length;
+						new_chain = chain;
+					}
 				}
+			} catch (error) {
+				console.log(error);
 			}
 		}
 		if (new_chain) {

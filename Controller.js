@@ -7,7 +7,7 @@ class Controller {
 		const values = req.body;
 		const last_block = await blockchain.last_block;
 		let last_proof, previous_hash;
-		if (last_block == undefined) {
+		if (last_block.length === 0) {
 			last_proof = 0;
 			previous_hash = 0;
 		} else {
@@ -31,7 +31,7 @@ class Controller {
 	async nodes_register(req, res) {
 		const nodes = req.body.nodes;
 		for (let node of nodes) {
-			blockchain.register_node(node);
+			await blockchain.register_node(node);
 		}
 		let response = {
 			message: "Новые узлы добавлены",
@@ -41,26 +41,26 @@ class Controller {
 	}
 
 	async nodes_resovle(req, res) {
-		blockchain.resolve_conflicts().then((ans) => {
-			let response;
-			if (ans) {
-				response = {
-					message: "Наша цепь была замена",
-					new_chain: blockchain.chain,
-				};
-			} else {
-				response = {
-					message: "Цепь находится в актуальном состоянии",
-					new_chain: blockchain.chain,
-				};
-			}
-			return res.status(200).json(response);
-		});
+		let ans = await blockchain.resolve_conflicts();
+		let response;
+		if (ans) {
+			response = {
+				message: "Наша цепь была замена",
+				new_chain: await Block.find({}),
+			};
+		} else {
+			response = {
+				message: "Цепь находится в актуальном состоянии",
+				new_chain: await Block.find({}),
+			};
+		}
+		return res.status(200).json(response);
 	}
 
 	async checkqr(req, res) {
 		let data = req.body;
-		for (let item of blockchain.chain) {
+		let chain = await Block.find({});
+		for (let item of chain) {
 			for (let property in data) {
 				if (item[property] != data[property]) {
 					return res.status(200).send(false);

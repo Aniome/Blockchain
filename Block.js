@@ -13,7 +13,7 @@ import mongoose from "mongoose";
 
 const Block = new mongoose.Schema({
 	index: { type: Number, require: true },
-	timestamp: { type: Date, require: true },
+	timestamp: { type: String, require: true },
 	proof: { type: Number, require: true },
 	previous_hash: { type: String, require: true },
 	manufacturer: { type: String, require: true },
