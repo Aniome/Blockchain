@@ -11,15 +11,13 @@ import mongoose from "mongoose";
  * @param {string} previous_hash - хэш предыдущего блока
  */
 
-const Block = new mongoose.Schema({
-	index: { type: Number, require: true },
-	timestamp: { type: Date, require: true },
-	proof: { type: Number, require: true },
-	previous_hash: { type: String, require: true },
-	manufacturer: { type: String, require: true },
-	name_of_product: { type: String, require: true },
-	date_of_manufacture: { type: String, require: true },
-	product_description: { type: String, require: true },
+const Node = new mongoose.Schema({
+	protocol: { type: String, require: true },
+	slashes: { type: Boolean, require: true },
+	host: { type: String, require: true },
+	port: { type: String, require: true },
+	hostname: { type: String, require: true },
+	href: { type: String, require: true },
 });
 
-export default mongoose.model("blocks", Block);
+export default mongoose.model("nodes", Node);

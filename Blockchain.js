@@ -2,21 +2,22 @@
  * @module Blockchain
  */
 
-import { Block } from "./Block.js";
+import Block from "./Block.js";
 import crypto from "node:crypto";
 import Url from "node:url";
 import QRCode from "qrcode";
 import fetch from "node-fetch";
+import Node from "./node.js";
 
 export class Blockchain {
+	count = 0;
 	/**
 	 * Создает экземпляр блокчейна
 	 * @constructor
 	 */
-	constructor() {
-		this.chain = [];
+	/*constructor() {
 		this.nodes = new Set();
-	}
+	}*/
 	/**
 	 * Создает новый блок
 	 * @param {number} proof - Доказательство работы
@@ -28,9 +29,19 @@ export class Blockchain {
 	 * @param {number} previous_hash - Хэш предыдущего блока
 	 * @returns {Block} возвращает созданный блок
 	 */
-	new_block(proof, previous_hash, info) {
-		let block = new Block(proof, previous_hash, info);
-		this.chain.push(block);
+	async new_block(proof, previous_hash, info) {
+		info.index = this.count + 1;
+		this.count++;
+		const block = await Block.create({
+			index: info.index,
+			timestamp: new Date().getTime(),
+			proof: proof,
+			previous_hash: previous_hash,
+			manufacturer: info.manufacturer,
+			name_of_product: info.name_of_product,
+			date_of_manufacture: info.date_of_manufacture,
+			product_description: info.product_description,
+		});
 		return block;
 	}
 	/**
@@ -68,9 +79,16 @@ export class Blockchain {
 	 * Добавляет адреса новых узлов. Пример адреса: http://127.0.0.1:5001
 	 * @param {Array.string} address - Массив содержащий адреса узлов
 	 */
-	register_node(address) {
+	async register_node(address) {
 		let parsed_url = Url.parse(address);
-		this.nodes.add(parsed_url);
+		await Node.create({
+			protocol: parsed_url.protocol,
+			slashes: parsed_url.slashes,
+			host: parsed_url.host,
+			port: parsed_url.port,
+			hostname: parsed_url.hostname,
+			href: parsed_url.href,
+		});
 	}
 	/**
 	 * Проверка цепи на валидность
@@ -122,12 +140,12 @@ export class Blockchain {
 	 * @param {Block} block - блок для которого необходимо создать QR-код
 	 */
 	generateQRcode(block) {
-		QRCode.toFile(`${block.index}.png`, JSON.stringify(block));
+		QRCode.toFile(`QR/${block.index}.png`, JSON.stringify(block));
 	}
 	/**
 	 * @return {Block} Возвращает последний блок из цепи
 	 */
 	get last_block() {
-		return this.chain.at(-1);
+		return Block.find().sort({ index: -1 }).limit(1);
 	}
 }
