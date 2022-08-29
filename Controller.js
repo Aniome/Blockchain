@@ -1,42 +1,23 @@
 import { blockchain } from "./api.js";
 import { Blockchain } from "./Blockchain.js";
 import Block from "./Block.js";
+import BlockchainService from "./BlockchainService.js";
 
 class Controller {
 	async mine(req, res) {
 		const values = req.body;
-		const last_block = await blockchain.last_block;
-		let last_proof, previous_hash;
-		if (last_block.length === 0) {
-			last_proof = 0;
-			previous_hash = 0;
-		} else {
-			last_proof = last_block.proof;
-			previous_hash = Blockchain.hash(JSON.stringify(last_block));
-		}
-		const proof = blockchain.proof_of_work(last_proof);
-		const block = await blockchain.new_block(proof, previous_hash, values);
-		blockchain.generateQRcode(block);
+		const block = await BlockchainService.mine(values);
 		res.json(block);
 	}
 
 	async chain(req, res) {
-		let response = {
-			chain: await Block.find({}),
-			length: blockchain.count,
-		};
+		let response = await BlockchainService.chain();
 		res.status(200).json(response);
 	}
 
 	async nodes_register(req, res) {
 		const nodes = req.body.nodes;
-		for (let node of nodes) {
-			await blockchain.register_node(node);
-		}
-		let response = {
-			message: "Новые узлы добавлены",
-			total_nodes: nodes,
-		};
+		const response = await BlockchainService.nodes_register(nodes);
 		res.status(201).json(response);
 	}
 

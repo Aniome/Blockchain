@@ -1,5 +1,7 @@
 import { blockchain } from "./api.js";
 import { Blockchain } from "./Blockchain.js";
+import Block from "./Block.js";
+import Node from "./Node_.js";
 
 class BlockchainService {
 	async mine(values) {
@@ -18,24 +20,22 @@ class BlockchainService {
 		return block;
 	}
 
-	async chain(req, res) {
-		let response = {
+	async chain() {
+		return {
 			chain: await Block.find({}),
 			length: blockchain.count,
 		};
-		res.status(200).json(response);
 	}
 
-	async nodes_register(req, res) {
-		const nodes = req.body.nodes;
+	async nodes_register(nodes) {
 		for (let node of nodes) {
 			await blockchain.register_node(node);
 		}
 		let response = {
 			message: "Новые узлы добавлены",
-			total_nodes: nodes,
+			total_nodes: await Node.find(),
 		};
-		res.status(201).json(response);
+		return response;
 	}
 
 	async nodes_resovle(req, res) {

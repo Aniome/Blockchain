@@ -13,13 +13,6 @@ import { blockchain } from "./api.js";
 export class Blockchain {
 	count = 0;
 	/**
-	 * Создает экземпляр блокчейна
-	 * @constructor
-	 */
-	/*constructor() {
-		this.nodes = new Set();
-	}*/
-	/**
 	 * Создает новый блок
 	 * @param {number} proof - Доказательство работы
 	 * @param {Object} info - Объект с информацией
