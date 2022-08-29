@@ -22,33 +22,13 @@ class Controller {
 	}
 
 	async nodes_resovle(req, res) {
-		let ans = await blockchain.resolve_conflicts();
-		let response;
-		if (ans) {
-			response = {
-				message: "Наша цепь была замена",
-				new_chain: await Block.find({}),
-			};
-		} else {
-			response = {
-				message: "Цепь находится в актуальном состоянии",
-				new_chain: await Block.find({}),
-			};
-		}
+		const response = await BlockchainService.nodes_resovle();
 		return res.status(200).json(response);
 	}
 
 	async checkqr(req, res) {
-		let data = req.body;
-		let chain = await Block.find({});
-		for (let item of chain) {
-			for (let property in data) {
-				if (item[property] != data[property]) {
-					return res.status(200).send(false);
-				}
-			}
-		}
-		return res.status(200).send(true);
+		const ans = await BlockchainService.checkqr(req.body);
+		return res.status(200).send(ans);
 	}
 }
 

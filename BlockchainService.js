@@ -38,7 +38,7 @@ class BlockchainService {
 		return response;
 	}
 
-	async nodes_resovle(req, res) {
+	async nodes_resovle() {
 		let ans = await blockchain.resolve_conflicts();
 		let response;
 		if (ans) {
@@ -52,20 +52,18 @@ class BlockchainService {
 				new_chain: await Block.find({}),
 			};
 		}
-		return res.status(200).json(response);
+		return response;
 	}
 
-	async checkqr(req, res) {
-		let data = req.body;
-		let chain = await Block.find({});
-		for (let item of chain) {
-			for (let property in data) {
-				if (item[property] != data[property]) {
-					return res.status(200).send(false);
-				}
+	async checkqr(data) {
+		const chain = await Block.find();
+		const item = chain[data.index - 1];
+		for (let property in data) {
+			if (item[property] != data[property]) {
+				return false;
 			}
 		}
-		return res.status(200).send(true);
+		return true;
 	}
 }
 
