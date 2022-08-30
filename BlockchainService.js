@@ -7,7 +7,7 @@ class BlockchainService {
 	async mine(values) {
 		const last_block = await blockchain.last_block;
 		let last_proof, previous_hash;
-		if (last_block.length === 0) {
+		if (blockchain.count == 0) {
 			last_proof = 0;
 			previous_hash = 0;
 		} else {
@@ -22,7 +22,7 @@ class BlockchainService {
 
 	async chain() {
 		return {
-			chain: await Block.find({}),
+			chain: await Block.find(),
 			length: blockchain.count,
 		};
 	}
@@ -56,8 +56,7 @@ class BlockchainService {
 	}
 
 	async checkqr(data) {
-		const chain = await Block.find();
-		const item = chain[data.index - 1];
+		const item = await Block.findOne({ index: data.index });
 		for (let property in data) {
 			if (item[property] != data[property]) {
 				return false;

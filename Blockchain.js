@@ -147,6 +147,6 @@ export class Blockchain {
 	 * @return {Block} Возвращает последний блок из цепи
 	 */
 	get last_block() {
-		return Block.find().sort({ index: -1 }).limit(1);
+		return Block.findOne({ index: this.count });
 	}
 }
