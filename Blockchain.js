@@ -8,7 +8,7 @@ import Url from "node:url";
 import QRCode from "qrcode";
 import fetch from "node-fetch";
 import Node from "./Node_.js";
-import { blockchain } from "./api.js";
+import { blockchain } from "./index.js";
 
 export class Blockchain {
 	count = 0;

@@ -1,4 +1,4 @@
-import { blockchain } from "./api.js";
+import { blockchain } from "./index.js";
 import { Blockchain } from "./Blockchain.js";
 import Block from "./Block.js";
 import Node from "./Node_.js";
@@ -44,12 +44,12 @@ class BlockchainService {
 		if (ans) {
 			response = {
 				message: "Наша цепь была замена",
-				new_chain: await Block.find({}),
+				new_chain: await Block.find(),
 			};
 		} else {
 			response = {
 				message: "Цепь находится в актуальном состоянии",
-				new_chain: await Block.find({}),
+				new_chain: await Block.find(),
 			};
 		}
 		return response;

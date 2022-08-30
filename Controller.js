@@ -1,6 +1,3 @@
-import { blockchain } from "./api.js";
-import { Blockchain } from "./Blockchain.js";
-import Block from "./Block.js";
 import BlockchainService from "./BlockchainService.js";
 
 class Controller {
