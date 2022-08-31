@@ -13,9 +13,6 @@ async function startApp() {
 	app.use("", router);
 	app.listen(PORT);
 	await connectDB;
-	Block.countDocuments({}, function (err, c) {
-		blockchain.count = c;
-	});
 }
 
 startApp();

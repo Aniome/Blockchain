@@ -12,6 +12,11 @@ import { blockchain } from "./index.js";
 
 export class Blockchain {
 	count = 0;
+	constructor() {
+		Block.countDocuments({}, function (err, c) {
+			blockchain.count = c;
+		});
+	}
 	/**
 	 * Создает новый блок
 	 * @param {number} proof - Доказательство работы
